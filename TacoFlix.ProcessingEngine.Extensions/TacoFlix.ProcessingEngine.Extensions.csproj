@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TacoFlix.Model\TacoFlix.Model.csproj" />
     <ProjectReference Include="..\TacoFlix.Xconnect.Model\TacoFlix.Xconnect.Model.csproj" />
+    <ProjectReference Include="..\TacoFlixML.Model\TacoFlixML.Model.csproj" />
   </ItemGroup>
 
 </Project>

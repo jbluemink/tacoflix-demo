@@ -28,6 +28,10 @@ Next, copy the `TacoFlix.Model.dll`, `TacoFlix.Xconnect.Model.dll` and `TacoFlix
 
 Third, copy the contents of the `App_Data` folder in `TacoFlix.ProcessingEngine.Extensions` to the `<processing-engine-root>/App_Data` folder.
 
-Lastly, in `TacoFlix.Client/busSettings.xml`, make sure the two database connection strings have the proper information for the `Messaging` database.
+Fourth
+copy TacoFlixML.Model.dll and MLModel.zip and all Microsoft.ML dependency, to 
+* `<processing-engine-root>/`
 
+Lastly, in `TacoFlix.Client/busSettings.xml`, make sure the two database connection strings have the proper information for the `Messaging` database.
+To run the GenerateTrainingData you need to fill in your MovieDbApiKey in MovieProviderConfig.
 ### Happy Demoing!

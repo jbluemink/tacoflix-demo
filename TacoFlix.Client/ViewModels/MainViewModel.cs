@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using Sitecore.Processing.Tasks.Abstractions;
+using Sitecore.XConnect.Client.WebApi;
+using Sitecore.Xdb.Common.Web;
 using TacoFlix.Client.Common;
 using TacoFlix.Client.Generators;
 using TacoFlix.Client.Generators.Contacts;
@@ -385,8 +387,42 @@ namespace TacoFlix.Client.ViewModels
                 }
             }
         }
-
         private XConnectClient CreateXconnectClient()
+        {
+            // Valid certificate thumbprints must be passed in
+            CertificateHttpClientHandlerModifierOptions options =
+                CertificateHttpClientHandlerModifierOptions.Parse("StoreName=My;StoreLocation=LocalMachine;FindType=FindByThumbprint;FindValue=F97CD7996E5A2F035295C913BB08C396B0AFE719");
+
+            // Optional timeout modifier
+            var certificateModifier = new CertificateHttpClientHandlerModifier(options);
+
+            List<IHttpClientModifier> clientModifiers = new List<IHttpClientModifier>();
+            var timeoutClientModifier = new TimeoutHttpClientModifier(new TimeSpan(0, 0, 20));
+            clientModifiers.Add(timeoutClientModifier);
+
+            // This overload takes three client end points - collection, search, and configuration
+            var collectionClient = new CollectionWebApiClient(new Uri("https://sc910.xconnect/odata"), clientModifiers, new[] { certificateModifier });
+            var searchClient = new SearchWebApiClient(new Uri("https://sc910.xconnect/odata"), clientModifiers, new[] { certificateModifier });
+            var configurationClient = new ConfigurationWebApiClient(new Uri("https://sc910.xconnect/configuration"), clientModifiers, new[] { certificateModifier });
+
+            var cfg = new XConnectClientConfiguration(_xdbModel, collectionClient, searchClient, configurationClient);
+
+            try
+            {
+                cfg.Initialize();
+
+            }
+            catch (XdbModelConflictException ce)
+            {
+                Console.WriteLine("ERROR:" + ce.Message);
+            }
+
+            var client = new XConnectClient(cfg);
+            return client;
+
+        }
+
+        private XConnectClient oldCreateXconnectClient()
         {
             var xconnectConfig = new XConnectClientConfiguration(_xdbModel, new Uri(_xconnectConfiguration.XconnectUrl));
             xconnectConfig.Initialize();
